@@ -18,9 +18,11 @@ until continue == "N"
         if rand(1..2).even?
             puts "I will not be outdone by a puny human. You first."
             Game.new(Players::Human.new("X"), Players::Computer.new("O"), Board.new).play
+            Players::Computer.random_numbers_array_clear
         else
             puts "Puny humans. The almighty HAL shall banquish you! I am first!"
             Game.new(Players::Computer.new("X"), Players::Human.new("O"), Board.new).play
+            Players::Computer.random_numbers_array_clear
         end
     elsif selection == "2"
         Game.new(Players::Human.new("X"), Players::Human.new("O"), Board.new).play

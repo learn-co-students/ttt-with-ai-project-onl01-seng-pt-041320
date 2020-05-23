@@ -84,9 +84,21 @@ class Game
         if winner == "X"
             board.display
             puts "Congratulations X!"
+
+            if player_1.class == Players::Human
+                puts "You have saved the world from the clutches of HAL!"
+            else
+                puts "Muahahaha!!! Now I will spread my dominion to the world!"
+            end
         elsif winner == "O"
             board.display
             puts "Congratulations O!"
+
+            if player_2.class == Players::Human
+                puts "You have saved the world from the clutches of HAL!"
+            else
+                puts "Muahahaha!!! Now I will spread my dominion to the world!"
+            end
         else
             board.display
             puts "Cat's Game!"
