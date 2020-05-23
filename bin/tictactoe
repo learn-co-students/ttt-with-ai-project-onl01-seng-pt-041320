@@ -1,3 +1,10 @@
 #!/usr/bin/env ruby
 
 require_relative '../config/environment'
+
+puts "Welcom to Tic-Tac-Toe with HAL."
+puts "Select a game mode:\n\n
+
+1 - Player vs HAL
+2 - Player vs Player
+X - HAL vs HAL2"
