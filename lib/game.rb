@@ -64,7 +64,7 @@ class Game
     end
     
     def turn
-        print "Please enter a number 1-9: "
+        puts "Please enter a number 1-9: "
         user_input = current_player.move(self.board)
 
         if board.valid_move?(user_input)
@@ -76,15 +76,19 @@ class Game
 
     def play
         until over? == true
-            print "Please select a number 1-9: "
+            board.display
+            sleep 1
             turn
         end
         
         if winner == "X"
+            board.display
             puts "Congratulations X!"
         elsif winner == "O"
+            board.display
             puts "Congratulations O!"
         else
+            board.display
             puts "Cat's Game!"
         end
     end

@@ -52,23 +52,21 @@ class Board
     end
 
     def valid_move?(user_input)
-        if user_input.to_i >= 0 && user_input.to_i <= 8 && user_input.length == 1
+        if user_input.to_i >= 1 && user_input.to_i <= 9 #&& user_input.length == 1
             #binding.pry
             if taken?(user_input) == false
               true
             else
-              print "Select another number 1-9: "
+              puts "Invalid selection.\n"
               false
             end
         else
-            print "Select another number 1-9: "
+            puts "Invalid selection.\n"
             false
         end
     end
 
     def update(user_input, player)
-        if valid_move?(user_input)
-            self.cells[user_input.to_i - 1] = player.token
-        end
+        self.cells[user_input.to_i - 1] = player.token
     end
 end
