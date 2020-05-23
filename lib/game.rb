@@ -77,7 +77,7 @@ class Game
     def play
         until over? == true
             board.display
-            sleep 1
+            sleep 0.5
             turn
         end
         
