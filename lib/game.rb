@@ -88,7 +88,7 @@ class Game
             if player_1.class == Players::Human
                 puts "You have saved the world from the clutches of HAL!"
             else
-                puts "Muahahaha!!! Now I will spread my dominion to the world!"
+                puts "Muahahaha!!! Now I will spread my dominion over the world!"
             end
         elsif winner == "O"
             board.display
@@ -97,7 +97,7 @@ class Game
             if player_2.class == Players::Human
                 puts "You have saved the world from the clutches of HAL!"
             else
-                puts "Muahahaha!!! Now I will spread my dominion to the world!"
+                puts "Muahahaha!!! Now I will spread my dominion over the world!"
             end
         else
             board.display
