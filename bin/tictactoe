@@ -11,7 +11,7 @@ until continue == "N"
     
     1 - Player vs HAL
     2 - Player vs Player
-    X - HAL vs HAL2"
+    Press Any Key - HAL vs HAL2"
     
     selection = gets.chomp
     if selection == "1"
