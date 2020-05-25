@@ -104,4 +104,40 @@ class Game
             puts "Cat's Game!"
         end
     end
+
+    def play_game
+        puts "Welcom to Tic-Tac-Toe with HAL."
+        
+        continue = "Y"
+        
+        until continue == "N"
+            puts "Select a game mode:
+            
+            1 - Player vs HAL
+            2 - Player vs Player
+            Press Any Key - HAL vs HAL2"
+            
+            selection = gets.chomp
+            
+            if selection == "1"
+                if rand(1..2).even?
+                    puts "I will not be outdone by a puny human. You first."
+                    Game.new(Players::Human.new("X"), Players::Computer.new("O"), Board.new).play
+                    Players::Computer.random_numbers_array_clear
+                else
+                    puts "Puny humans. The almighty HAL shall banquish you! I am first!"
+                    Game.new(Players::Computer.new("X"), Players::Human.new("O"), Board.new).play
+                    Players::Computer.random_numbers_array_clear
+                end
+            elsif selection == "2"
+                Game.new(Players::Human.new("X"), Players::Human.new("O"), Board.new).play
+            else
+                Game.new(Players::Computer.new("X"), Players::Computer.new("O"), Board.new).play
+                Players::Computer.random_numbers_array_clear
+            end
+            
+            puts "Would you like to play again? (y/n)"
+            continue = gets.upcase.chomp
+        end
+    end
 end
