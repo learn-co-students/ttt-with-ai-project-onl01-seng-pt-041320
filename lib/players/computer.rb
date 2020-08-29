@@ -1,42 +1,49 @@
+# frozen_string_literal: true
+require 'pry'
 module Players
   class Computer < Player
-    def move(board)
-      move = nil
+    CORNER_COMBINATIONS = [0,2,6,8]
+    SIDE_COMBINATIONS = [1,3,5,7]
 
-      # When going first, take the middle square. When going second, take the middle square if it isn't yet taken.
-      if !board.taken?(5)
-        move = "5"
-
-      # If going second and the middle square is taken, take the upper-left corner square.
-      elsif board.turn_count == 1
-        move = "1"
-
-      # If you went first (and took the middle), take a corner square with your second move.
-      elsif board.turn_count == 2
-        move = [1, 3, 7, 9].detect{|i| !board.taken?(i)}.to_s
-
-      # If you went second (and took the middle) and the other player has occupied opposing corner squares, blow up the attempted trap by taking a side square.
-      elsif board.turn_count == 3 && (board.position(1) == board.position(9) || board.position(3) == board.position(7))
-        move = "2"
-
-      # From here on, run through the WIN_COMBINATIONS array, checking whether any of the combinations have two squares filled with the same token and a third, empty square.
-      else
-        Game::WIN_COMBINATIONS.detect do |cmb|
-
-          # First, check whether you have any chances to win, since it doesn't matter whether the opponent has a chance to win if you can win first.
-          if cmb.select{|i| board.position(i+1) == token}.size == 2 && cmb.any?{|i| board.position(i+1) == " "}
-            move = cmb.select{|i| !board.taken?(i+1)}.first.to_i.+(1).to_s
-
-          # If you can't play any winning moves, play a move to block the opponent from winning.
-          elsif cmb.select{|i| board.position(i+1) != " " && board.position(i+1) != token}.size == 2 && cmb.any?{|i| board.position(i+1) == " "}
-            move = cmb.select{|i| !board.taken?(i+1)}.first.to_i.+(1).to_s
-          end
+    def corner_free?(board)
+      CORNER_COMBINATIONS.any? do |index|
+        if (board.cells[index] != "X") && (board.cells[index] != "O")
+          return index
         end
-
-        # If none of the WIN_COMBINATIONS patterns have two squares taken by the same token and a third empty square, play into the first open square you find, first checking corners and then checking sides.
-        move = [1, 3, 7, 9, 2, 4, 6, 8].detect{|i| !board.taken?(i)}.to_s if move == nil
       end
-      move
+    end
+
+    def side_free?(board)
+      SIDE_COMBINATIONS.any? do |index|
+        if (board.cells[index] != "X") && (board.cells[index] != "O")
+          return index
+        end
+      end
+    end
+
+    def move(board)
+      #Can I make a move that will win the game?
+      #Is the opponent about to win? Block!
+      if board.near_win? != nil
+        my_move = board.near_win?.to_i+1
+        #puts "Block: #{my_move}"
+      elsif board.turn_count == 1 && ((board.cells[4] != "X") && (board.cells[4] != "O"))
+        my_move = 5
+        #puts "Second move center is open: #{my_move}"
+      elsif corner_free?(board)
+        #If a corner space is free, take it
+        my_move = corner_free?(board)+1
+        #puts "Corner free: #{my_move}"
+      elsif (board.cells[4] != "X") && (board.cells[4] != "O")
+        #Take center space
+        my_move = 5
+        #puts "Center is open: #{my_move}"
+      else
+        #Otherwise, take a side space
+        my_move = side_free?(board)+1
+        #puts "Side free: #{my_move}"
+      end
+      my_move.to_s
     end
   end
 end
