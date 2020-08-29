@@ -1,71 +1,98 @@
 # frozen_string_literal: true
-
 class Game
-  attr_accessor :board, :player_1, :player_2
-  WIN_COMBINATIONS = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [6, 4, 2]
-  ].freeze
+  attr_accessor :board
 
-  def initialize(player_1 = Players::Human.new('X'), player_2 = Players::Human.new('O'), board = Board.new)
+  def initialize(player_1=Players::Human.new("X"),player_2=Players::Human.new("O"),board=Board.new)
+    self.player_1 = player_1 if player_1
+    self.player_2 = player_2 if player_2
     @board = board
+  end
+
+  WIN_COMBINATIONS = [
+    [0,1,2], # Top row
+    [3,4,5], # Middle row
+    [6,7,8], # Bottom row
+    [0,3,6], # Top column
+    [1,4,7], # Middle column
+    [2,5,8], # Bottom column
+    [0,4,8], # Diag A
+    [6,4,2], # Diag B
+  ]
+
+
+  def player_1=(player_1)
     @player_1 = player_1
+  end
+
+  def player_1
+    @player_1
+  end
+
+  def player_2=(player_2)
     @player_2 = player_2
   end
 
-  def over?
-    won? || draw?
+  def player_2
+    @player_2
   end
 
   def current_player
-    @board.turn_count.even? ? @player_1 : @player_2
-  end
-
-  def winner
-    if winning_combo = won?
-      @winner = @board.cells[winning_combo.first]
-    end
-  end
-
-  def turn
-    player = current_player
-    current_move = player.move(@board)
-    if !@board.valid_move?(current_move)
-      turn
+    if @board.turn_count % 2 == 0
+      return @player_1
     else
-      puts "Turn: #{@board.turn_count + 1}\n"
-      @board.display
-      @board.update(current_move, player)
-      puts "#{player.token} moved #{current_move}"
-      @board.display
-      puts "\n\n"
-    end
-  end
-
-  def play
-    turn until over?
-    if won?
-      puts "Congratulations #{winner}!"
-    elsif draw?
-      puts "Cat's Game!"
+      return @player_2
     end
   end
 
   def won?
-    WIN_COMBINATIONS.detect do |combo|
-      @board.cells[combo[0]] == @board.cells[combo[1]] &&
-        @board.cells[combo[1]] == @board.cells[combo[2]] &&
-        @board.taken?(combo[0] + 1)
+    WIN_COMBINATIONS.any? do |win_state|
+      if (win_state.all? {|index| @board.taken?(index+1)}) && (win_state.all? {|index| @board.cells[index] == "X"} || win_state.all? {|index| @board.cells[index] == "O"})
+        return win_state
+      end
     end
   end
 
   def draw?
-    @board.full? && !won?
+    if @board.full? && !won?
+      return true
+    end
+  end
+
+  def over?
+    if won? || draw? || @board.full?
+      return true
+    end
+  end
+
+  def winner
+    if won?
+      return @board.cells[won?[0]]
+    end
+  end
+
+  def turn
+    #input = ""
+    puts("Player #{current_player.token} please enter 1-9:")
+    index = @board.input_to_index(current_player.move(@board))
+    #binding.pry
+    if @board.valid_move?(index+1)
+      @board.update(index+1,current_player)
+      @board.display
+    else
+      puts("invalid")
+      turn
+    end
+  end
+
+  def play
+    until over?
+      turn
+    end
+    if draw?
+      puts "Cat's Game!"
+    else
+        puts "Congratulations #{winner}!"
+    end
   end
 end
+
